@@ -5,11 +5,14 @@ import com.kuzmin.Repository.PostRepository
 import com.kuzmin.dto.PostRequestDto
 import com.kuzmin.dto.PostResponseDto
 import io.ktor.application.*
+import io.ktor.auth.*
 import io.ktor.features.*
 import io.ktor.http.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
+import org.kodein.di.generic.instance
+import org.kodein.di.ktor.kodein
 
 
 fun Routing.v1() {
@@ -21,21 +24,23 @@ fun Routing.v1() {
             call.respond(response)
         }
         get("/{id}") {
-            val id = call.parameters["id"]?.toLongOrNull() ?: throw ParameterConversionException("id", "Long")
+            val id =
+                call.parameters["id"]?.toLongOrNull()
+                    ?: throw ParameterConversionException("id", "Long")
             val model = repo.getById(id) ?: throw NotFoundException()
             val response = PostResponseDto.fromModel(model)
             call.respond(response)
         }
-        post {
-            val input = call.receive<PostRequestDto>()
-            val model = PostModel(id = input.id, author = input.author)
-            val response = PostResponseDto.fromModel(repo.save(model))
+        post("/like") {
+            val request = call.receive<PostRequestDto>()
+            val response = repo.likeById(request.id) ?: throw NotFoundException()
             call.respond(response)
         }
-        delete("/{id}") {
-            val id = call.parameters["id"]?.toLongOrNull() ?: throw ParameterConversionException("id", "Long")
-            repo.removeById(id)
-            call.respond(HttpStatusCode.NoContent)
+        post("/dislike") {
+            val request = call.receive<PostRequestDto>()
+            val response = repo.dislikeById(request.id, ) ?: throw NotFoundException()
+            call.respond(response)
         }
+
     }
     }

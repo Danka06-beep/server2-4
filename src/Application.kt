@@ -6,6 +6,7 @@ import com.kuzmin.Repository.PostRepositoryInMemoryConcurrentImpl
 import com.kuzmin.route.v1
 import io.ktor.application.*
 import io.ktor.features.*
+import io.ktor.gson.*
 import io.ktor.http.*
 import io.ktor.response.*
 import io.ktor.request.*
@@ -27,6 +28,12 @@ fun Application.module(testing: Boolean = false) {
             PostRepositoryInMemoryConcurrentImpl().apply {
                 runBlocking {
                 }
+            }
+        }
+        install(ContentNegotiation) {
+            gson {
+                setPrettyPrinting()
+                serializeNulls()
             }
         }
     }

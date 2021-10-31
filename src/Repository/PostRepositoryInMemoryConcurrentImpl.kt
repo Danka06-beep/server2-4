@@ -3,9 +3,12 @@ package com.kuzmin.Repository
 import com.google.gson.Gson
 import com.kuzmin.Model.PostModel
 import com.kuzmin.Model.PostType
+import com.kuzmin.PostData
 import com.kuzmin.dto.PostRequestDto
 import kotlinx.coroutines.*
-import sun.awt.Mutex
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+
 import java.io.File
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.locks.ReentrantLock
@@ -14,10 +17,8 @@ import kotlin.coroutines.EmptyCoroutineContext
 
 class PostRepositoryInMemoryConcurrentImpl : PostRepository {
     private var nextId = 1L
-    private val items = mutableListOf<PostModel>()
-    private val mutex = ReentrantLock()
-
-
+    private val items = PostData.getDataBase()
+    private val mutex = Mutex()
     override suspend fun getAll(): List<PostModel> =
         mutex.withLock {
             for (post in items) {
@@ -37,10 +38,12 @@ class PostRepositoryInMemoryConcurrentImpl : PostRepository {
             -1 -> {
                 val copy = item.copy(id = nextId++)
                 items.add(copy)
+                File("pst.json").writeText(Gson().toJson(items))
                 copy
             }
             else -> {
                 items[index] = item
+                File("pst.json").writeText(Gson().toJson(items))
                 item
             }
         }

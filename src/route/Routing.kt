@@ -38,5 +38,9 @@ fun Routing.v1() {
             val response = repo.dislikeById(request.id, ) ?: throw NotFoundException()
             call.respond(response)
         }
+        get("/posts") {
+            val response = repo.getAll()
+            call.respond(response)
+        }
     }
     }

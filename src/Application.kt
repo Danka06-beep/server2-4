@@ -5,6 +5,8 @@ import com.kuzmin.Repository.PostRepository
 import com.kuzmin.Repository.PostRepositoryInMemoryConcurrentImpl
 import com.kuzmin.route.v1
 import io.ktor.application.*
+import io.ktor.features.*
+import io.ktor.http.*
 import io.ktor.response.*
 import io.ktor.request.*
 import io.ktor.routing.*
@@ -28,9 +30,22 @@ fun Application.module(testing: Boolean = false) {
             }
         }
     }
+
+    install(StatusPages) {
+        exception<NotImplementedError> {
+            call.respond(HttpStatusCode.NotImplemented)
+        }
+        exception<ParameterConversionException> {
+            call.respond(HttpStatusCode.BadRequest)
+        }
+        exception<Throwable> {
+            call.respond(HttpStatusCode.InternalServerError)
+        }
+    }
     install(Routing) {
         v1()
     }
+
 }
 
 

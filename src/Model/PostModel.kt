@@ -18,9 +18,9 @@ data class PostModel(
     val dateRepost: Long? = null,
     val autorRepost: String? = null,
     var hidePost: Boolean = false,
-    var viewPost: Long = 0,
-    val authorId: Long = -1,
-    val postLike: ArrayList<Long> = ArrayList()
+    var viewPost: Long = 0
+
+
 )
 enum class PostType {
     Reposts,

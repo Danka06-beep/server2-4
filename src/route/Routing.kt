@@ -13,12 +13,9 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import org.kodein.di.generic.instance
 import org.kodein.di.ktor.kodein
-
-
 fun Routing.v1() {
-    route("/api/v1/posts") {
+    route("/api/v1") {
         val repo by kodein().instance<PostRepository>()
-
         get {
             val response = repo.getAll().map { PostResponseDto.fromModel(it) }
             call.respond(response)
@@ -41,6 +38,5 @@ fun Routing.v1() {
             val response = repo.dislikeById(request.id, ) ?: throw NotFoundException()
             call.respond(response)
         }
-
     }
     }

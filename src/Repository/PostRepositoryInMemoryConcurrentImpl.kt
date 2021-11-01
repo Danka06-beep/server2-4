@@ -2,18 +2,11 @@ package com.kuzmin.Repository
 
 import com.google.gson.Gson
 import com.kuzmin.Model.PostModel
-import com.kuzmin.Model.PostType
 import com.kuzmin.PostData
-import com.kuzmin.dto.PostRequestDto
-import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
 import java.io.File
-import java.util.concurrent.CopyOnWriteArrayList
-import java.util.concurrent.locks.ReentrantLock
-import kotlin.concurrent.withLock
-import kotlin.coroutines.EmptyCoroutineContext
 
 class PostRepositoryInMemoryConcurrentImpl : PostRepository {
     private var nextId = 1L
@@ -76,4 +69,14 @@ class PostRepositoryInMemoryConcurrentImpl : PostRepository {
             }
         }
     }
-}
+
+    override suspend fun new(txt: String?, author: String?): List<PostModel> =
+        mutex.withLock {
+            val new = PostModel(id = items.size.toLong(),txt = txt,author = author)
+            items.add(new)
+            File("pst.json").writeText(Gson().toJson(items))
+            items
+
+        }
+    }
+

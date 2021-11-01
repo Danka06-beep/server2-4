@@ -35,11 +35,17 @@ fun Routing.v1() {
         }
         post("/dislike") {
             val request = call.receive<PostRequestDto>()
-            val response = repo.dislikeById(request.id, ) ?: throw NotFoundException()
+            val response = repo.dislikeById(request.id ) ?: throw NotFoundException()
             call.respond(response)
         }
         get("/posts") {
             val response = repo.getAll()
+            call.respond(response)
+        }
+        get("/new"){
+            val request = call.receive<PostResponseDto>()
+            print(request.toString())
+            val response = repo.new(request.txt.toString(), request.author) ?: throw NotFoundException()
             call.respond(response)
         }
     }

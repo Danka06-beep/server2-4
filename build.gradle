@@ -13,7 +13,7 @@ apply plugin: 'application'
 
 group 'com.kuzmin'
 version '0.0.1'
-mainClassName = "com.kuzmin.Application.KT"
+mainClassName = "com.kuzmin.ApplicationKt"
 
 sourceSets {
     main.kotlin.srcDirs = main.java.srcDirs = ['src']

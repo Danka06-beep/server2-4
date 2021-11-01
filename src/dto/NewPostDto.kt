@@ -8,6 +8,6 @@ data class NewPostDto(
     val txt: String? = null,
     val adress : String? = null,
     val coordinates : Pair<Double,Double>? = null,
-    val type: PostType = PostType.Reposts,
+    val type: PostType = PostType.Reposts
 ) {
 }

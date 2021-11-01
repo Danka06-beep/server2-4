@@ -13,7 +13,7 @@ apply plugin: 'application'
 
 group 'com.kuzmin'
 version '0.0.1'
-mainClassName = "io.ktor.server.netty.EngineMain"
+mainClassName = "com.kuzmin.Application.KT"
 
 sourceSets {
     main.kotlin.srcDirs = main.java.srcDirs = ['src']
@@ -40,3 +40,4 @@ dependencies {
     implementation "org.springframework.security:spring-security-crypto:5.1.6.RELEASE"
     implementation "io.ktor:ktor-gson:1.2.4"
 }
+task stage(dependsOn: installDist)

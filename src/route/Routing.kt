@@ -2,6 +2,7 @@ package com.kuzmin.route
 
 import com.kuzmin.Model.PostModel
 import com.kuzmin.Repository.PostRepository
+import com.kuzmin.dto.NewPostDto
 import com.kuzmin.dto.PostRequestDto
 import com.kuzmin.dto.PostResponseDto
 import io.ktor.application.*
@@ -14,6 +15,9 @@ import io.ktor.routing.*
 import org.kodein.di.generic.instance
 import org.kodein.di.ktor.kodein
 fun Routing.v1() {
+    get("/") {
+        call.respondText("Server working", ContentType.Text.Plain)
+    }
     route("/api/v1") {
         val repo by kodein().instance<PostRepository>()
         get {
@@ -42,11 +46,12 @@ fun Routing.v1() {
             val response = repo.getAll()
             call.respond(response)
         }
-        get("/new"){
-            val request = call.receive<PostResponseDto>()
+        post("/new"){
+            val request = call.receive<NewPostDto>()
             print(request.toString())
             val response = repo.new(request.txt.toString(), request.author) ?: throw NotFoundException()
             call.respond(response)
         }
+
     }
     }

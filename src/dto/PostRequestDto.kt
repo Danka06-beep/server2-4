@@ -8,6 +8,6 @@ data class PostRequestDto(
     var liketxt: Int = 0,
     val dateRepost: Long? = null,
     val authorReposts: String? = null,
-    val authorId: Long = - 1
+    val authorId: Long
 ) {
 }

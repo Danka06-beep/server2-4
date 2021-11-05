@@ -5,6 +5,8 @@ import com.kuzmin.Repository.PostRepository
 import com.kuzmin.Repository.PostRepositoryInMemoryConcurrentImpl
 import com.kuzmin.Repository.UserRepository
 import com.kuzmin.Repository.UserRepositoryInMemoryWithMutexImpl
+import com.kuzmin.route.RoutingV1
+
 import com.kuzmin.service.JWTTokenService
 import com.kuzmin.service.UserService
 import io.ktor.application.*
@@ -76,7 +78,7 @@ fun Application.module(testing: Boolean = false) {
         }
     }
     install(Routing) {
-        val routing by kodein().instance<Routing>()
+        val routing by kodein().instance<RoutingV1>()
         routing.setup(this)
     }
 

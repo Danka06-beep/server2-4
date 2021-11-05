@@ -17,10 +17,8 @@ import io.ktor.routing.*
 import org.kodein.di.generic.instance
 import org.kodein.di.ktor.kodein
 
-fun Routing.v1(userService: UserService) {
-    get("/") {
-        call.respondText("Server working", ContentType.Text.Plain)
-    }
+class RoutingV1() {
+    private lateinit var userService : UserService
     fun setup(configuration: Routing) {
         with(configuration) {
             route("/api/v1") {
@@ -66,6 +64,9 @@ fun Routing.v1(userService: UserService) {
                     val input = call.receive<AuthenticationRequestDto>()
                     val response = userService.addUser(input.name, input.password)
                     call.respond(response)
+                }
+                get("/") {
+                    call.respondText("Server working", ContentType.Text.Plain)
                 }
             }
         }

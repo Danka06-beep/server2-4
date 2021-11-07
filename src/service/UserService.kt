@@ -48,7 +48,7 @@ class UserService (
 
     suspend fun addUser(username: String, password: String): AuthenticationResponseDto {
         val model = UserModel(
-            id = repo.getSizeListUser().toLong(),
+            id = 0, //repo.getSizeListUser().toLong(),
             name = username,
             password = passwordEncoder.encode(password)
         )

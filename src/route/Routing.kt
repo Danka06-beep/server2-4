@@ -17,9 +17,10 @@ import io.ktor.routing.*
 import org.kodein.di.generic.instance
 import org.kodein.di.ktor.kodein
 
-class RoutingV1() {
-    private lateinit var userService : UserService
+class RoutingV1(val userService : UserService) {
+
     fun setup(configuration: Routing) {
+
         with(configuration) {
             route("/api/v1") {
                 val repo by kodein().instance<PostRepository>()

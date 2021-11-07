@@ -63,8 +63,4 @@ class UserRepositoryInMemoryWithMutexImpl : UserRepository {
             }
         }
     }
-
-    override suspend fun getSizeListUser(): Int {
-        return items.size
-    }
 }

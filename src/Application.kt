@@ -8,6 +8,7 @@ import com.kuzmin.Repository.UserRepositoryInMemoryWithMutexImpl
 import com.kuzmin.route.RoutingV1
 
 import com.kuzmin.service.JWTTokenService
+import com.kuzmin.service.PostService
 import com.kuzmin.service.UserService
 import io.ktor.application.*
 import io.ktor.auth.*
@@ -18,27 +19,34 @@ import io.ktor.http.*
 import io.ktor.response.*
 import io.ktor.request.*
 import io.ktor.routing.*
+import io.ktor.server.netty.*
 import kotlinx.coroutines.runBlocking
-import org.kodein.di.generic.bind
-import org.kodein.di.generic.eagerSingleton
-import org.kodein.di.generic.instance
-import org.kodein.di.generic.singleton
+import org.kodein.di.generic.*
 import org.kodein.di.ktor.KodeinFeature
 import org.kodein.di.ktor.kodein
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
+import javax.naming.ConfigurationException
+import javax.security.auth.login.Configuration
 
-fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
+fun main(args: Array<String>) {
+    EngineMain.main(args)
+}
 
 @Suppress("unused") // Referenced in application.conf
 @kotlin.jvm.JvmOverloads
 fun Application.module(testing: Boolean = false) {
+    install(ContentNegotiation) {
+        gson {
+            setPrettyPrinting()
+            serializeNulls()
+        }
+    }
     install(KodeinFeature) {
+        constant(tag = "upload-dir") with (environment.config.propertyOrNull("nscraft.upload.dir")?.getString() ?: throw ConfigurationException("Upload dir"))
         bind<PostRepository>() with singleton { PostRepositoryInMemoryConcurrentImpl() }
-        bind<PasswordEncoder>() with eagerSingleton { BCryptPasswordEncoder() }
-        bind<JWTTokenService>() with eagerSingleton { JWTTokenService() }
-        bind<Routing>() with eagerSingleton { Routing(instance(tag = "upload-dir")) }
-        bind<UserRepository>() with eagerSingleton { UserRepositoryInMemoryWithMutexImpl() }
+       bind<PostService>() with eagerSingleton { PostService(instance()) }
+        bind<RoutingV1>() with eagerSingleton { RoutingV1(instance()) }
         bind<UserService>() with eagerSingleton {
             UserService(instance(), instance(), instance()).apply {
                 runBlocking {
@@ -46,14 +54,9 @@ fun Application.module(testing: Boolean = false) {
                 }
             }
         }
-
-        install(ContentNegotiation) {
-            gson {
-                setPrettyPrinting()
-                serializeNulls()
-            }
-        }
     }
+
+
     install(Authentication) {
         jwt {
             val jwtService by kodein().instance<JWTTokenService>()
